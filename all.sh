@@ -11,6 +11,7 @@ DATA_DIR=${BASE_DIR}/data
 DEV_DIR=${HOME}/xonotic/smb
 USER_DIR=${HOME}/.supermechanicalbros
 USER_DATA_DIR=${USER_DIR}/data
+MAPS_DIR=${DATA_DIR}/xonotic-sxb.pk3dir
 GMQCC_DIR=${DEV_DIR}/gmqcc
 GAMECODE_DIR=${DEV_DIR}/gamecode
 SMB_BIN=darkplaces-sdl
@@ -93,6 +94,18 @@ smb_build() {
         cp *.dat ${USER_DATA_DIR}
 }
 
+smb_build_maps() {
+    cd ${DATA_DIR}
+    if [[ ! -d ${MAPS_DIR} ]]; then
+        git clone git@github.com:z/xonotic-sxb.pk3dir.git && \
+        cd ${MAPS_DIR}
+    else
+        cd ${MAPS_DIR} && git fetch && git pull --rebase
+    fi
+    echo -e "XONDIR=${HOME}/xonotic/xonotic\nRADIANTDIR=${HOME}/xonotic/xonotic/netradiant/install" > ${MAPS_DIR}/build.conf
+    ./build.sh --maps-all
+}
+
 smb_update() {
     echo "git pull --rebase all the things!"
 }
@@ -114,12 +127,16 @@ FLAGS
 COMMANDS
 
     build                  update dependencies, builds everything
+    build maps             update dependencies, builds maps
     run                    runs Super Mechanical Bros.
 
 EXAMPLES
 
     # update dependencies, builds everything
     ./all.sh build
+
+    # update dependencies, builds maps
+    ./all.sh build maps
 
     # runs the game
     ./all.sh run
@@ -150,6 +167,7 @@ case $1 in
     '--version')        _version;;
     # commands
     'build')            smb_build;;
+    'build_maps')       shift; smb_build_maps $@;;
     'run')              shift; smb_run $@;;
     # default
     *)                  _help; exit 0;;
