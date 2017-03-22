@@ -1,16 +1,18 @@
 #!/bin/bash
 # name: all.sh
-# version: 0.2.0
+# version: 0.2.1
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
 
 # Customize
 REPOS="gamecode smb-data.pk3dir smb-maps.pk3dir"
+DATA_DIR=${BASE_DIR}/data
 DEV_DIR=${HOME}/xonotic/smb
 USER_DIR=${HOME}/.supermechanicalbros
+USER_DATA_DIR=${USER_DIR}/data
 GMQCC_DIR=${DEV_DIR}/gmqcc
-DATA_DIR=${USER_DIR}/data
+GAMECODE_DIR=${DEV_DIR}/gamecode
 SMB_BIN=darkplaces-sdl
 
 # Internal Constants
@@ -58,17 +60,27 @@ smb_build() {
         cd ${GMQCC_DIR} && git fetch && git pull --rebase
     fi
     make
-    cd -
+
+    # Clone or Update gamecode
+    if [[ ! -d ${GAMECODE_DIR} ]]; then
+      git clone git@github.com:SuperMechBros/gamecode.git && cd ${GAMECODE_DIR}
+    else
+        cd ${GAMECODE_DIR} && git fetch && git pull --rebase
+    fi
+    make
+
+    cd ${DATA_DIR}
 
     # Clone or Update
-    for r in ${REPOS}; do
+    for r in ${DATA_REPOS}; do
+        echo "Updating: ${r}"
         if [[ ! -d ${r} ]]; then
             git clone git@github.com:SuperMechBros/${r}.git && \
             cd ${r}
         else
             cd ${r} && git fetch && git pull --rebase
         fi
-        cd -
+        cd ${DATA_DIR}
     done
 
     # Build
@@ -77,8 +89,8 @@ smb_build() {
         ./build.sh
 
     # Move mod
-    mkdir -p ${DATA_DIR} && \
-        cp *.dat ${DATA_DIR}
+    mkdir -p ${USER_DATA_DIR} && \
+        cp *.dat ${USER_DATA_DIR}
 }
 
 smb_update() {
@@ -97,12 +109,12 @@ _help() {
     echo "./all.sh
 
 FLAGS
-    --version                                   prints the version string
+    --version              prints the version string
 
 COMMANDS
 
-    build                                       update dependencies, builds everything
-    run                                         runs Super Mechanical Bros.
+    build                  update dependencies, builds everything
+    run                    runs Super Mechanical Bros.
 
 EXAMPLES
 
