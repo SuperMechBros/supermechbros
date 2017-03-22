@@ -1,6 +1,6 @@
 #!/bin/bash
-# name: all.sh
-# version: 0.2.1
+# name: all
+# version: 0.2.2
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
@@ -14,6 +14,7 @@ USER_DATA_DIR=${USER_DIR}/data
 MAPS_DIR=${DATA_DIR}/xonotic-sxb.pk3dir
 GMQCC_DIR=${DEV_DIR}/gmqcc
 GAMECODE_DIR=${DEV_DIR}/gamecode
+ENGINE_DIR=${DEV_DIR}/supermechbros/darkplaces/
 SMB_BIN=darkplaces-sdl
 
 # Internal Constants
@@ -33,7 +34,7 @@ _fix_windows_path() {
 }
 
 _get_engine_dir() {
-    relative_dir=${DEV_DIR}/supermechbros/darkplaces/
+    relative_dir=${ENGINE_DIR}
     _check_dir ${relative_dir}
     export SMB_DIR=$(cd ${relative_dir}; pwd)
 }
@@ -48,6 +49,8 @@ _get_dev_dir() {
         exit 1
     fi
 }
+
+# Build Tasks
 
 smb_build() {
 
@@ -76,8 +79,7 @@ smb_build() {
     for r in ${DATA_REPOS}; do
         echo "Updating: ${r}"
         if [[ ! -d ${r} ]]; then
-            git clone git@github.com:SuperMechBros/${r}.git && \
-            cd ${r}
+            git clone git@github.com:SuperMechBros/${r}.git && cd ${r}
         else
             cd ${r} && git fetch && git pull --rebase
         fi
@@ -97,12 +99,13 @@ smb_build() {
 smb_build_maps() {
     cd ${DATA_DIR}
     if [[ ! -d ${MAPS_DIR} ]]; then
-        git clone git@github.com:z/xonotic-sxb.pk3dir.git && \
-        cd ${MAPS_DIR}
+        git clone git@github.com:z/xonotic-sxb.pk3dir.git && cd ${MAPS_DIR}
     else
         cd ${MAPS_DIR} && git fetch && git pull --rebase
     fi
-    echo -e "XONDIR=${HOME}/xonotic/xonotic\nRADIANTDIR=${HOME}/xonotic/xonotic/netradiant/install" > ${MAPS_DIR}/build.conf
+    if [[ ! -f ${MAPS_DIR}/build.conf ]]; then
+        echo -e "XONDIR=${HOME}/xonotic/xonotic\nRADIANTDIR=${HOME}/xonotic/xonotic/netradiant/install" > ${MAPS_DIR}/build.conf
+    fi
     ./build.sh --maps-all
 }
 
@@ -114,12 +117,14 @@ smb_run() {
     ${SMB_DIR}/${SMB_BIN} -smb $@
 }
 
+# Meta
+
 _version() {
     echo ${VERSION}
 }
 
 _help() {
-    echo "./all.sh
+    echo "./all
 
 FLAGS
     --version              prints the version string
@@ -127,31 +132,31 @@ FLAGS
 COMMANDS
 
     build                  update dependencies, builds everything
-    build maps             update dependencies, builds maps
+    build_maps             update dependencies, builds maps
     run                    runs Super Mechanical Bros.
 
 EXAMPLES
 
     # update dependencies, builds everything
-    ./all.sh build
+    ./all build
 
     # update dependencies, builds maps
-    ./all.sh build maps
+    ./all build_maps
 
     # runs the game
-    ./all.sh run
+    ./all run
 
-    # Override the path to Super Mechnical Bros. engine (assumed from relative location of this script)
-    SMB_DIR=\$HOME/some/other/dir; ./all.sh --version
+    # Override the path to Super Mechnical Bros.
+    # (normally assumed from relative location of this script)
+    SMB_DIR=\$HOME/some/other/dir; ./all --version
 "
 }
 
 
 # Init
-######
 
 # Allow for overriding the path assumption
-# SMB_DIR=$HOME/some/other/dir; ./all.sh --version
+# SMB_DIR=$HOME/some/other/dir; ./all --version
 if [[ -z ${SMB_DIR} ]]; then
     _get_engine_dir
 else
