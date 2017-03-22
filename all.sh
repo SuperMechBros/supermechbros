@@ -138,7 +138,7 @@ case $1 in
     '--version')        _version;;
     # commands
     'build')            smb_build;;
-    'run')              smb_run $@;;
+    'run')              shift; smb_run $@;;
     # default
     *)                  _help; exit 0;;
 esac
