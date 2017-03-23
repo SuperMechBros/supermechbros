@@ -1,6 +1,6 @@
 #!/bin/bash
 # name: all
-# version: 0.2.3
+# version: 0.2.4
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
@@ -9,7 +9,7 @@ BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
 DATA_DIR=${BASE_DIR}/data
 DEV_DIR=${HOME}/xonotic/smb
 ENGINE_BIN=darkplaces-sdl
-ENGINE_DIR=${DEV_DIR}/supermechbros/darkplaces/
+ENGINE_DIR=${DEV_DIR}/supermechbros/darkplaces
 GAMECODE_DIR=${DEV_DIR}/gamecode
 GMQCC_DIR=${DEV_DIR}/gmqcc
 MAPS_DIR=${DATA_DIR}/xonotic-sxb.pk3dir
@@ -53,7 +53,12 @@ _get_dev_dir() {
 
 # Build Tasks
 
-smb_build() {
+smb_build_all() {
+    smb_build_game
+    smb_build_maps $@
+}
+
+smb_build_game() {
     cd ${DEV_DIR}
 
     smb_update
@@ -132,26 +137,51 @@ _version() {
     echo ${VERSION}
 }
 
-_help() {
+_help_short() {
+    echo "./all
+      build [all|game|maps]       builds the game, maps, or both. implies update.
+      run                         runs Super Mechanical Bros.
+      update                      update all repositories, and dependencies
+      --version                   prints the version string
+      --help                      prints additional help
+"
+}
+
+_help_long() {
     echo "./all
 
 FLAGS
-    --version              prints the version string
+    --version                   prints the version string
+    --help                      prints this help
 
 COMMANDS
 
-    build                  update dependencies, builds everything
-    build_maps             update dependencies, builds maps
-    run                    runs Super Mechanical Bros.
-    update                 update all repositories and dependencies
+    build [all|game|maps]       builds the game, maps, or both. implies update.
+    run                         runs Super Mechanical Bros.
+    update                      update all repositories, and dependencies
+
+REPOSITORY STRUCTURE
+
+    The all script operates with the repository structure modeled below.
+
+    smb
+    ├── gamecode
+    ├── gmqcc                      # gitlab.com/xonotic/gmqcc
+    └── supermechbros              # You are HERE
+        ├── darkplaces             # TODO (use Mario/smb in darkplaces)
+        ├── data
+        │   ├── smb-data.pk3dir
+        │   ├── smb-maps.pk3dir
+        │   └── xonotic-sxb.pk3dir
+        └── xonotic-sxb.pk3dir     # github.com/z/xonotic-sxb.pk3dir
 
 EXAMPLES
 
-    # update dependencies, builds everything
+    # init build game without maps
     ./all build
 
     # update dependencies, builds maps
-    ./all build_maps
+    ./all build maps
 
     # runs the game
     ./all run
@@ -178,13 +208,19 @@ case "`uname`" in
 esac
 
 case $1 in
-    # flags
-    '--version')        _version;;
+    # meta
+    '--help'|'help')         shift; _help_long $@;;
+    '--version'|'version')   shift; _version;;
     # commands
-    'build')            smb_build;;
-    'build_maps')       shift; smb_build_maps $@;;
-    'run')              shift; smb_run $@;;
-    'update')           shift; smb_update $@;;
+    'build')
+        case $2 in
+            'all')           shift; smb_build_all $@;;
+            'maps')          shift; smb_build_maps $@;;
+            'game')          shift; smb_build_game;;
+            *)               shift; smb_build_game;;
+        esac;;
+    'run')                   shift; smb_run $@;;
+    'update')                shift; smb_update $@;;
     # default
-    *)                  _help; exit 0;;
+    *)                       shift; _help_short; exit 0;;
 esac
