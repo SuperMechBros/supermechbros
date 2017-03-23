@@ -21,6 +21,8 @@ smb
 
 ## Setup
 
+### Code
+
 Checkout this repository:
 
 *The parent directory MUST be named `smb` as a safety check*
@@ -31,7 +33,37 @@ git clone git@github.com:SuperMechBros/supermechbros.git
 cd supermechbros
 ```
 
-## Building and Running
+### Dependencies
+
+#### Linux
+
+###### Debian/Ubuntu
+
+```
+sudo apt-get install build-essential xserver-xorg-dev x11proto-xf86dri-dev x11proto-xf86dga-dev x11proto-xf86vidmode-dev libxxf86dga-dev libxcb-xf86dri0-dev libxpm-dev libxxf86vm-dev libsdl1.2-dev libsdl2-dev libsdl2-image-dev libclalsadrv-dev libasound2-dev libxext-dev libjpeg-turbo8-dev git-core unzip wget zlib1g-dev
+```
+
+###### Fedora/Red Hat
+
+```
+sud yum install x11-proto-devel libalsa2-static-devel libjpeg62-devel libjpeg62-static-devel libSDL2-devel
+```
+
+###### Arch
+
+```
+sudo pacman -S alsa-lib curl libjpeg-turbo libmodplug libpng libvorbis libxpm libxxf86dga libxxf86vm sdl2 unzip
+```
+
+#### Windows
+
+[msys2](http://www.msys2.org/)
+
+#### OSX
+
+Xcode + git, if your version of Xcode doesn't come with git, try [git-osx-installer](https://sourceforge.net/projects/git-osx-installer/files/).
+
+### Building and Running
 
 Build all gamecode (checkout all required repositories, and build dependencies):
 
@@ -44,8 +76,15 @@ Run the game:
 ```
 ./all run
 ```
-
 ## Commands
+
+```
+build [all|game|maps]       builds the game, maps, or both. implies update. defaults game.
+run                         runs Super Mechanical Bros.
+update                      update all repositories, and dependencies
+```
+
+## Examples
 
 ```bash
 # update dependencies, builds everything

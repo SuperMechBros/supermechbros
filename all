@@ -1,6 +1,6 @@
 #!/bin/bash
 # name: all
-# version: 0.2.5
+# version: 0.2.6
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
@@ -156,7 +156,7 @@ FLAGS
 
 COMMANDS
 
-    build [all|game|maps]       builds the game, maps, or both. implies update.
+    build [all|game|maps]       builds the game, maps, or both. implies update. defaults game.
     run                         runs Super Mechanical Bros.
     update                      update all repositories, and dependencies
 
@@ -203,7 +203,7 @@ else
 fi
 
 case "`uname`" in
-    MINGW*|Win*)        _fix_windows_path;
+    MINGW*|Win*)             _fix_windows_path;
 esac
 
 case $1 in
