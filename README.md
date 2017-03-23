@@ -8,18 +8,18 @@ The `all` script will setup the repositories as modeled below:
 
 ```
 smb
-├── gamecode
+├── gamecode                   # quakec
 ├── gmqcc                      # gitlab.com/xonotic/gmqcc
 └── supermechbros              # You are HERE
     ├── darkplaces             # TODO (use Mario/smb in darkplaces)
-    ├── data
-    │   ├── smb-data.pk3dir
-    │   ├── smb-maps.pk3dir
-    │   └── xonotic-sxb.pk3dir
-    └── xonotic-sxb.pk3dir     # github.com/z/xonotic-sxb.pk3dir
+    └── data
+        ├── smb-data.pk3dir
+        ├── smb-maps.pk3dir
+        └── xonotic-sxb.pk3dir # github.com/z/xonotic-sxb.pk3dir
+
 ```
 
-## Building and Running
+## Setup
 
 Checkout this repository:
 
@@ -30,6 +30,8 @@ mkdir smb && cd smb
 git clone git@github.com:SuperMechBros/supermechbros.git
 cd supermechbros
 ```
+
+## Building and Running
 
 Build all gamecode (checkout all required repositories, and build dependencies):
 

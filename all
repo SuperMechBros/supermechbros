@@ -1,6 +1,6 @@
 #!/bin/bash
 # name: all
-# version: 0.2.4
+# version: 0.2.5
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
@@ -46,7 +46,7 @@ _get_dev_dir() {
     if [[ "$(cd $(dirname $0)/../; basename $(pwd))" == "smb" ]]; then
         export DEV_DIR=$(cd ${relative_dir}; pwd)
     else
-        echo "the parent directory needs to be named 'smb', I guess."
+        echo "[ SAFETY CHECK ] the parent directory needs to be named 'smb'"
         exit 1
     fi
 }
@@ -165,15 +165,14 @@ REPOSITORY STRUCTURE
     The all script operates with the repository structure modeled below.
 
     smb
-    ├── gamecode
+    ├── gamecode                   # quakec
     ├── gmqcc                      # gitlab.com/xonotic/gmqcc
     └── supermechbros              # You are HERE
         ├── darkplaces             # TODO (use Mario/smb in darkplaces)
-        ├── data
-        │   ├── smb-data.pk3dir
-        │   ├── smb-maps.pk3dir
-        │   └── xonotic-sxb.pk3dir
-        └── xonotic-sxb.pk3dir     # github.com/z/xonotic-sxb.pk3dir
+        └── data
+            ├── smb-data.pk3dir
+            ├── smb-maps.pk3dir
+            └── xonotic-sxb.pk3dir # github.com/z/xonotic-sxb.pk3dir
 
 EXAMPLES
 
