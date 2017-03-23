@@ -4,10 +4,10 @@ Super Mechanical Bros main game repository.
 
 ## Repository Structure
 
-The build script will setup the repositories as modeled below:
+The `all` script will setup the repositories as modeled below:
 
 ```
-.
+smb
 ├── gamecode
 ├── gmqcc                      # gitlab.com/xonotic/gmqcc
 └── supermechbros              # You are HERE
@@ -23,7 +23,10 @@ The build script will setup the repositories as modeled below:
 
 Checkout this repository:
 
+*The parent directory MUST be named `smb` as a safety check*
+
 ```
+mkdir smb && cd smb
 git clone git@github.com:SuperMechBros/supermechbros.git
 cd supermechbros
 ```
