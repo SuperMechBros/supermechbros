@@ -31,7 +31,7 @@ _check_dir() {
 }
 
 _fix_windows_path() {
-    export PATH="$d0/misc/buildfiles/win64:$d0/d0_blind_id/.libs:$PATH"
+    export PATH="${BASE_DIR}/misc/buildfiles/win64:${BASE_DIR}/d0_blind_id/.libs:$PATH"
 }
 
 _get_engine_dir() {
