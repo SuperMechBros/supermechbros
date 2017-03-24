@@ -16,7 +16,6 @@ smb
         ├── smb-data.pk3dir
         ├── smb-maps.pk3dir
         └── xonotic-sxb.pk3dir # github.com/z/xonotic-sxb.pk3dir
-
 ```
 
 ## Setup
