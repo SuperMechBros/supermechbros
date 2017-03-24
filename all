@@ -1,6 +1,6 @@
 #!/bin/bash
 # name: all
-# version: 0.2.8
+# version: 0.2.9
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
@@ -15,6 +15,7 @@ GMQCC_DIR=${DEV_DIR}/gmqcc
 MAPS_DIR=${DATA_DIR}/xonotic-sxb.pk3dir
 USER_DIR=${HOME}/.supermechanicalbros
 USER_DATA_DIR=${USER_DIR}/data
+QCSRC_DIR=${GAMECODE_DIR}/qcsrc
 
 # Internal Constants
 SCRIPT_NAME=$(basename $0 .sh)
@@ -78,8 +79,6 @@ smb_build_game() {
     cd ${GAMECODE_DIR}
     make
 
-    cd ${DATA_DIR}
-
     # Build
     cd ${GAMECODE_DIR} && \
         ./update.sh && \
@@ -101,6 +100,21 @@ smb_build_maps() {
         echo -e "XONDIR=${HOME}/xonotic/xonotic\nRADIANTDIR=${HOME}/xonotic/xonotic/netradiant/install" > ${MAPS_DIR}/build.conf
     fi
     ./build.sh --maps-all
+}
+
+smb_clean_all() {
+    smb_clean_game
+    smb_clean_maps
+}
+
+smb_clean_game() {
+    cd ${QCSRC_DIR}
+    make clean
+}
+
+smb_clean_maps() {
+    cd ${MAPS_DIR}
+    ./build.sh --clean
 }
 
 smb_update() {
@@ -150,7 +164,8 @@ _version() {
 
 _help_short() {
     echo "./all
-      build [all|game|maps]       builds the game, maps, or both. implies update.
+      build [all|game|maps]       builds the game, maps, or both. defaults game.
+      clean [all|game|maps]       cleans the game, maps, or both.
       run                         runs Super Mechanical Bros.
       update                      update all repositories, and dependencies
       --version                   prints the version string
@@ -167,7 +182,8 @@ FLAGS
 
 COMMANDS
 
-    build [all|game|maps]       builds the game, maps, or both. implies update. defaults game.
+    build [all|game|maps]       builds the game, maps, or both. defaults game.
+    clean [all|game|maps]       cleans the game, maps, or both.
     run                         runs Super Mechanical Bros.
     update                      update all repositories, and dependencies
 
@@ -223,6 +239,13 @@ case $1 in
     '--help'|'help')          shift; _help_long $@;;
     '--version'|'version')    shift; _version;;
     # commands
+    'clean')
+        case $2 in
+            'all')            shift; smb_clean_all $@;;
+            'maps')           shift; smb_clean_maps $@;;
+            'game')           shift; smb_clean_game;;
+            *)                shift; smb_clean_game;;
+        esac;;
     'build')
         case $2 in
             'all')            shift; smb_build_all $@;;

@@ -85,7 +85,8 @@ Run the game:
 ## Commands
 
 ```
-build [all|game|maps]       builds the game, maps, or both. implies update. defaults game.
+build [all|game|maps]       builds the game, maps, or both. defaults game.
+clean [all|game|maps]       cleans the game, maps, or both.
 run                         runs Super Mechanical Bros.
 update                      update all repositories, and dependencies
 ```
