@@ -13,8 +13,8 @@ smb
 └── supermechbros              # You are HERE
     ├── darkplaces             # TODO (use Mario/smb in darkplaces)
     └── data
-        ├── smb-data.pk3dir
-        ├── smb-maps.pk3dir
+        ├── smb-data.pk3dir    # common config/data
+        ├── smb-maps.pk3dir    # map essentials/patches
         └── xonotic-sxb.pk3dir # github.com/z/xonotic-sxb.pk3dir
 ```
 
@@ -60,13 +60,20 @@ sudo pacman -S alsa-lib curl libjpeg-turbo libmodplug libpng libvorbis libxpm li
 
 #### OSX
 
-Xcode + git, if your version of Xcode doesn't come with git, try [git-osx-installer](https://sourceforge.net/projects/git-osx-installer/files/).
+[Xcode](https://developer.apple.com/xcode/ide/), git, and [brew](https://brew.sh/) if your version of Xcode doesn't come with git, try [git-osx-installer](https://sourceforge.net/projects/git-osx-installer/files/).
+
+*Due to inconsistencies in BSD vs GNU, you'll need to install the following via brew:*
+
+```
+brew install gnu-sed jpeg
+```
 
 ### Building and Running
 
 Build all gamecode (checkout all required repositories, and build dependencies):
 
 ```
+./all update
 ./all build
 ```
 

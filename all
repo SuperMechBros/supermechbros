@@ -1,6 +1,6 @@
 #!/bin/bash
 # name: all
-# version: 0.2.7
+# version: 0.2.8
 # Copyright 2017 SMB, MIT License
 
 BASE_DIR="$(cd "$(dirname "${0}")" && pwd -P)"
@@ -38,6 +38,15 @@ _fix_windows_path() {
     export PATH="${BASE_DIR}/misc/buildfiles/win64:${BASE_DIR}/d0_blind_id/.libs:$PATH"
 }
 
+_fix_osx_sed_path() {
+    if [[ -x "$(command -v brew)" ]]; then
+        export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+    else
+       echo "Please install 'brew', and run 'brew install gnu-sed jpeg'"
+       exit 1
+    fi
+}
+
 _get_engine_dir() {
     relative_dir=${ENGINE_DIR}
     _check_dir ${relative_dir}
@@ -63,10 +72,6 @@ smb_build_all() {
 }
 
 smb_build_game() {
-    cd ${DEV_DIR}
-
-    smb_update
-
     cd ${GMQCC_DIR}
     make
 
@@ -176,8 +181,8 @@ REPOSITORY STRUCTURE
     └── supermechbros              # You are HERE
         ├── darkplaces             # TODO (use Mario/smb in darkplaces)
         └── data
-            ├── smb-data.pk3dir
-            ├── smb-maps.pk3dir
+            ├── smb-data.pk3dir    # common config/data
+            ├── smb-maps.pk3dir    # map essentials/patches
             └── xonotic-sxb.pk3dir # github.com/z/xonotic-sxb.pk3dir
 
 EXAMPLES
@@ -209,23 +214,24 @@ else
 fi
 
 case "`uname`" in
-    MINGW*|Win*)             _fix_windows_path;
+    MINGW*|Win*)              _fix_windows_path;;
+    'Darwin')                 _fix_osx_sed_path;;
 esac
 
 case $1 in
     # meta
-    '--help'|'help')         shift; _help_long $@;;
-    '--version'|'version')   shift; _version;;
+    '--help'|'help')          shift; _help_long $@;;
+    '--version'|'version')    shift; _version;;
     # commands
     'build')
         case $2 in
-            'all')           shift; smb_build_all $@;;
-            'maps')          shift; smb_build_maps $@;;
-            'game')          shift; smb_build_game;;
-            *)               shift; smb_build_game;;
+            'all')            shift; smb_build_all $@;;
+            'maps')           shift; smb_build_maps $@;;
+            'game')           shift; smb_build_game;;
+            *)                shift; smb_build_game;;
         esac;;
-    'run')                   shift; smb_run $@;;
-    'update')                shift; smb_update $@;;
+    'run')                    shift; smb_run $@;;
+    'update')                 shift; smb_update $@;;
     # default
-    *)                       shift; _help_short; exit 0;;
+    *)                        shift; _help_short; exit 0;;
 esac
